@@ -5,5 +5,5 @@ import tailwindcss from '@tailwindcss/vite'
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react(), tailwindcss()],
-  base: "https://subhamc1.github.io/chat-application-frontend/"
+  base: "/chat-application-frontend/"
 })
