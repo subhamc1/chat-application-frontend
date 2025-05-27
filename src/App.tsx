@@ -44,6 +44,7 @@ function App() {
 
   function handleCreateChatRoom(nickname: string, userIcon: string){
     client.createChatRoom(nickname,userIcon).then(value => {
+      console.log("the_value", value);
       setRoomId(value);
       setNickname(nickname);
       setUserIcon(userIcon);
@@ -58,6 +59,7 @@ function App() {
     setNickname(nickname);
     setUserIcon(userIcon);
     setChatRoomOpen(true);})
+    console.log("Joined chat room with ID:", roomId);
   }
 
   function sendMessage(text: string) {
@@ -87,7 +89,7 @@ function App() {
           </AppBar>
         </Box>
         <Box sx={{ flexGrow: "1"}}>
-          {chatRoomOpen ? <ChatRoom sendMessage={sendMessage} messages={messages}/> : <div>No chat rooms are open.</div>}
+          {chatRoomOpen ? <ChatRoom sendMessage={sendMessage} messages={messages} setMessages={setMessages} nickname={nickname}/> : <div>No chat rooms are open.</div>}
         </Box>
       </Box>
     </ThemeProvider>

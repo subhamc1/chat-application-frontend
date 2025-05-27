@@ -3,12 +3,13 @@ import { TextBox } from "./TextBox";
 import {useState} from "react"
 import type { SocketMessage } from "teleparty-websocket-lib/lib/SocketMessage";
 
-export function ChatRoom({sendMessage, messages}: {sendMessage: (text: string) => void,messages: SocketMessage[]}) {
+export function ChatRoom({sendMessage, messages, setMessages, nickname}: {sendMessage: (text: string) => void,messages: SocketMessage[], setMessages: (messages: SocketMessage[]) => void, nickname: string}) {
   const [text, setText] = useState("");
 
   function handleSend(text: string){
       if (text.trim() === "") return; // Prevent sending empty messages
       sendMessage(text);
+      setMessages([...messages, { type: "sendMessage", data: { value: text, nickname: nickname } }]); // Add the message to the local state
       setText(""); // Clear the input after sending
   }
 
@@ -28,7 +29,6 @@ export function ChatRoom({sendMessage, messages}: {sendMessage: (text: string) =
           </div>
           <div className="chat-header">
             {message.data.nickname}
-            <time className="text-xs opacity-50">12:46</time>
           </div>
           <div className="chat-bubble">{message.data.value}</div>
           </div> )
