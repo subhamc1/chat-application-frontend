@@ -67,7 +67,7 @@ function App() {
       client.sendMessage(SocketMessageTypes.SEND_MESSAGE, text);
     }
   }
-
+  console.log(messages)
   return (
     <ThemeProvider theme={theme}>
       <Box sx={{dispaly: "flex", flexDirection: "column", height: "100%"}}>
