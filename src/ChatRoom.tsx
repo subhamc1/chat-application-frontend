@@ -13,7 +13,7 @@ export function ChatRoom({sendMessage, messages, setMessages, nickname}: {sendMe
       setText(""); // Clear the input after sending
   }
 
-  console.log("ChatRoom", messages);
+  console.log("Messages", messages);
   return (
     <Box sx={{ height: "100%", display: "flex", flexDirection: "column" }}>
       <Box flexGrow={1}>
