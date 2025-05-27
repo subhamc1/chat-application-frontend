@@ -34,7 +34,7 @@ export function CreateChatRoomDialog({handleCreateChatRoom, connectionReady}: {h
               const formData = new FormData(event.currentTarget);
               const formJson = Object.fromEntries((formData as any).entries());
               const nickname = formJson.nickname;
-              const userIcon = "a";
+              const userIcon = "abc"; // Placeholder for user icon, can be replaced with actual logic
               handleCreateChatRoom(nickname,userIcon);
               handleClose();
             },
