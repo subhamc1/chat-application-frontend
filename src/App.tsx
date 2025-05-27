@@ -48,7 +48,6 @@ function App() {
       setNickname(nickname);
       setUserIcon(userIcon);
       setChatRoomOpen(true);
-      console.log("roomId", roomId);
       handleJoinChatRoom(roomId, nickname, userIcon);
     })
   }
