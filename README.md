@@ -1,10 +1,13 @@
 # React + TypeScript + Vite
 
 ## Steps to run the application locally
+
+```console
 git clone https://github.com/subhamc1/chat-application-frontend.git
 cd chat-application-frontend
 npm i
 npm run dev
+```
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
