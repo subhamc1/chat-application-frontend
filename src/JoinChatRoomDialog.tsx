@@ -7,7 +7,7 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 
-export function JoinChatRoomDialog() {
+export function JoinChatRoomDialog({handleJoinChatRoom, connectionReady}: {handleJoinChatRoom: (roomId: string, nickname: string, userIcon: string) => void, connectionReady: boolean}) {
   const [open, setOpen] = React.useState(false);
 
   const handleClickOpen = () => {
@@ -33,8 +33,10 @@ export function JoinChatRoomDialog() {
               event.preventDefault();
               const formData = new FormData(event.currentTarget);
               const formJson = Object.fromEntries((formData as any).entries());
-              const email = formJson.email;
-              console.log(email);
+              const roomId = formJson.roomId;
+              const userIcon = "a"; // Placeholder for user icon, can be replaced with actual logic
+              const nickname = formJson.nickname;
+              handleJoinChatRoom(roomId,nickname,userIcon);
               handleClose();
             },
           },
@@ -68,7 +70,7 @@ export function JoinChatRoomDialog() {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>
-          <Button type="submit">Join</Button>
+          <Button type="submit" disabled={!connectionReady}>Join</Button>
         </DialogActions>
       </Dialog>
     </React.Fragment>

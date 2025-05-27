@@ -6,10 +6,13 @@ import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import { orange } from "@mui/material/colors";
-import { Button, CssBaseline } from "@mui/material";
+import { CssBaseline } from "@mui/material";
 import { CreateChatRoomDialog } from "./CreateChatRoomDialog";
 import { JoinChatRoomDialog } from "./JoinChatRoomDialog";
 import { ChatRoom } from "./ChatRoom";
+import { TelepartyClient, SocketMessageTypes } from 'teleparty-websocket-lib';
+import type { SocketEventHandler } from "teleparty-websocket-lib";
+import type { SocketMessage } from "teleparty-websocket-lib/lib/SocketMessage";
 
 const theme = createTheme({
   palette: {
@@ -20,10 +23,50 @@ const theme = createTheme({
 });
 
 function App() {
-  const [chatRoomOpen, setChatRoomOpen] = useState(true);
-  const [nickname, setNickname] = useState(false);
-  const [roomId, setRoomId] = useState(0);
-  const [userIcon, setUserIcon] = useState("");
+  const [connectionReady, setConnectionReady] = useState(false);
+  const [chatRoomOpen, setChatRoomOpen] = useState(false);
+  const [nickname, setNickname] = useState("");
+  const [roomId, setRoomId] = useState("");
+  const [, setUserIcon] = useState("");
+  const [messages, setMessages] = useState<SocketMessage[]>([]);
+
+  const eventHandler: SocketEventHandler = {
+    onConnectionReady: () => { setConnectionReady(true) },
+    onClose: () => { setConnectionReady(false) },
+    onMessage: (message) => { console.log("Received message: ", message);
+      if (message.type==="sendMessage"&&!message.data.isSystemMessage){
+        setMessages([...messages, message])
+      }
+    }
+  };
+
+  const client = new TelepartyClient(eventHandler);
+
+  function handleCreateChatRoom(nickname: string, userIcon: string){
+    client.createChatRoom(nickname,userIcon).then(value => {
+      setRoomId(value);
+      setNickname(nickname);
+      setUserIcon(userIcon);
+      setChatRoomOpen(true);
+      console.log("roomId", roomId);
+      handleJoinChatRoom(roomId, nickname, userIcon);
+    })
+  }
+
+  function handleJoinChatRoom(roomId: string, nickname: string, userIcon: string){
+    client.joinChatRoom(nickname, roomId, userIcon).then(() => {
+    setRoomId(roomId);
+    setNickname(nickname);
+    setUserIcon(userIcon);
+    setChatRoomOpen(true);})
+  }
+
+  function sendMessage(text: string) {
+    if (roomId && nickname && text.trim()) {
+      client.sendMessage(SocketMessageTypes.SEND_MESSAGE, text);
+    }
+  }
+
   return (
     <ThemeProvider theme={theme}>
       <Box sx={{dispaly: "flex", flexDirection: "column", height: "100%"}}>
@@ -39,13 +82,13 @@ function App() {
               >
                 Chat Application
               </Typography>
-              <CreateChatRoomDialog />
-              <JoinChatRoomDialog />
+              <CreateChatRoomDialog handleCreateChatRoom={handleCreateChatRoom} connectionReady={connectionReady}/>
+              <JoinChatRoomDialog handleJoinChatRoom={handleJoinChatRoom} connectionReady={connectionReady}/>
             </Toolbar>
           </AppBar>
         </Box>
         <Box sx={{ flexGrow: "1"}}>
-          {chatRoomOpen && <ChatRoom />}
+          {chatRoomOpen ? <ChatRoom sendMessage={sendMessage} messages={messages}/> : <div>No chat rooms are open.</div>}
         </Box>
       </Box>
     </ThemeProvider>
